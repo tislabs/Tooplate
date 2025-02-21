@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 2  # Number of pods to run
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app
+          image: <your-ecr-repository-uri>:<image-tag>  # Replace with your actual ECR URI and tag
+          ports:
+            - containerPort: 80
