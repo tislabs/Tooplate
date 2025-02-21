@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Trigger on push to the 'main' branch ok
+      - main  # Trigger on push to the 'main' branch
 
 jobs:
   build_and_deploy:
@@ -40,6 +40,14 @@ jobs:
         run: |
           docker tag my-nginx-repo:$GITHUB_SHA 585853585762.dkr.ecr.sa-east-1.amazonaws.com/my-nginx-repo:$GITHUB_SHA
           docker push 585853585762.dkr.ecr.sa-east-1.amazonaws.com/my-nginx-repo:$GITHUB_SHA
+
+      - name: Check if Kubernetes deployment exists
+        run: |
+          kubectl get deployments my-app || echo "Deployment 'my-app' not found, creating it."
+
+      - name: Create Kubernetes Deployment if it does not exist
+        run: |
+          kubectl apply -f kubernetes/deployment.yaml || echo "Deployment already exists"
 
       - name: Update Kubernetes Deployment
         run: |
