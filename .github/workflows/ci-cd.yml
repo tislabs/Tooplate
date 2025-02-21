@@ -23,12 +23,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ECR_REPOSITORY }}:$GITHUB_SHA .
+          docker build -t my-nginx-repo:$GITHUB_SHA .
 
       - name: Push Docker image to ECR
         run: |
-          docker tag ${{ secrets.ECR_REPOSITORY }}:$GITHUB_SHA ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:$GITHUB_SHA
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:$GITHUB_SHA
+          docker tag my-nginx-repo:$GITHUB_SHA 585853585762.dkr.ecr.sa-east-1.amazonaws.com/my-nginx-repo:$GITHUB_SHA
+          docker push 585853585762.dkr.ecr.sa-east-1.amazonaws.com/my-nginx-repo:$GITHUB_SHA
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
@@ -39,5 +39,5 @@ jobs:
 
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/my-app my-app=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:$GITHUB_SHA
+          kubectl set image deployment/my-app my-app=585853585762.dkr.ecr.sa-east-1.amazonaws.com/my-nginx-repo:$GITHUB_SHA
           kubectl rollout status deployment/my-app
